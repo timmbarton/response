@@ -1,7 +1,6 @@
 package response
 
 import (
-	"errors"
 	"reflect"
 
 	"github.com/gofiber/fiber/v2"
@@ -42,11 +41,10 @@ var (
 
 func WithError(c *fiber.Ctx, err *errs.Err) error {
 	if err == nil {
-		err = new(errs.Err)
-		errors.As(errs.New(errs.ErrCodeInternal, 0, "unknown message"), &err)
+		err = errs.ErrUnknown
 	}
 
-	return c.Status(int(err.Code)).JSON(Response{Result: resultError})
+	return c.Status(err.GetCode()).JSON(Response{Result: resultError})
 }
 
 func OkWithData(c *fiber.Ctx, data interface{}) error {
